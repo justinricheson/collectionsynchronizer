@@ -20,8 +20,6 @@ namespace JMR.Common
         /// <param name="target">The target collection.</param>
         /// <param name="sourceCreator">Function to create a source type.</param>
         /// <param name="targetCreator">Function to create a target type.</param>
-        /// <param name="sourceSelector">Function to select a matching source type based on a target type.</param>
-        /// <param name="targetSelector">Function to select a matching target type based on a source type.</param>
         /// <param name="syncMode">The synchronization mode. (Defaults to TwoWay)</param>
         public CollectionSynchronizer(
             ObservableCollection<TSource> source,
