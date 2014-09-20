@@ -28,40 +28,36 @@ namespace JMR.Common
             Func<TSource, TTarget> targetCreator,
             SynchronizationMode syncMode = SynchronizationMode.TwoWay)
         {
-            if (source == null)
-            {
-                throw new ArgumentNullException("source");
-            }
-            if (target == null)
-            {
-                throw new ArgumentNullException("target");
-            }
-            if (sourceCreator == null)
-            {
-                throw new ArgumentNullException("sourceCreator");
-            }
-            if (targetCreator == null)
-            {
-                throw new ArgumentNullException("targetCreator");
-            }
+            ThrowOnNull(source, "source");
+            ThrowOnNull(target, "target");
+            ThrowOnNull(sourceCreator, "sourceCreator");
+            ThrowOnNull(targetCreator, "targetCreator");
 
-            SyncMode = syncMode;
-
+            _sourceCreator = sourceCreator;
+            _targetCreator = targetCreator;
+			
             Source = source;
             Target = target;
+            SyncMode = syncMode;
 
-            if (SyncMode == SynchronizationMode.OneWayToTarget || SyncMode == SynchronizationMode.TwoWay)
+            if (SyncMode == SynchronizationMode.OneWayToTarget ||
+                SyncMode == SynchronizationMode.TwoWay)
             {
                 Source.CollectionChanged += Source_CollectionChanged;
             }
 
-            if (SyncMode == SynchronizationMode.OneWayToSource || SyncMode == SynchronizationMode.TwoWay)
+            if (SyncMode == SynchronizationMode.OneWayToSource ||
+                SyncMode == SynchronizationMode.TwoWay)
             {
                 Target.CollectionChanged += Target_CollectionChanged;
             }
-
-            _sourceCreator = sourceCreator;
-            _targetCreator = targetCreator;
+        }
+        private void ThrowOnNull(object arg, string name)
+        {
+            if (arg == null)
+            {
+                throw new ArgumentNullException(name);
+            }
         }
 
         public void Dispose()
@@ -105,7 +101,8 @@ namespace JMR.Common
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     target.RemoveRange(args.OldStartingIndex, args.OldItems.Count());
-                    target.InsertRange(args.NewStartingIndex, args.NewItems.Cast<TISource>().CreateRange(creator));
+                    target.InsertRange(args.NewStartingIndex, args.NewItems
+						.Cast<TISource>().CreateRange(creator));
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     target.Clear();
