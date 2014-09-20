@@ -4,7 +4,7 @@ using System.Collections.Specialized;
 
 namespace JMR.Common
 {
-    public class CollectionSynchronizer<TSource, TTarget>
+    public class CollectionSynchronizer<TSource, TTarget> : IDisposable
     {
         private Func<TTarget, TSource> _sourceCreator;
         private Func<TSource, TTarget> _targetCreator;
@@ -62,6 +62,12 @@ namespace JMR.Common
 
             _sourceCreator = sourceCreator;
             _targetCreator = targetCreator;
+        }
+
+        public void Dispose()
+        {
+            Source.CollectionChanged -= Source_CollectionChanged;
+            Target.CollectionChanged -= Target_CollectionChanged;
         }
 
         private void Target_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
